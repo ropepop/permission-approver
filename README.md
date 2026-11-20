@@ -14,7 +14,9 @@ On a Mac with the Swift command-line tools, open a terminal in this repository a
 swift inspect-alerts.swift
 ```
 
-The companion reports a count of visible windows matching its system-alert filter. Run it before and after dismissing a prompt yourself to compare the two observations. It reads window metadata and leaves the prompt in your hands. A count of zero means the filter found no match.
+The companion reports a count of visible windows matching its system-alert filter. Run it before and after dismissing a prompt yourself to compare the two observations. It reads window metadata and leaves the prompt in your hands. A count of zero means the filter found no match. A notification can also match, so a positive count alone does not identify a permission request.
+
+To check the filter against built-in examples, run `swift -D SELF_CHECK inspect-alerts.swift`. It exits quietly when the examples pass. If the normal inspector cannot access a window list, it prints an error instead of reporting zero.
 
 ## Inside the original tool
 
