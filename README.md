@@ -1,35 +1,20 @@
 # Permission Approver
 
-**What can a terminal tell you about a macOS permission dialog?**
+A terminal utility for macOS that watches for system permission dialogs. Its dashboard shows how many checks it has made, which button it recognized, and whether the dialog disappeared after it acted.
 
-A permission prompt is easy to recognize when you’re sitting in front of the Mac. From a terminal, even a simple question takes work to answer. Is a prompt still on screen? Is it the same one you saw a moment ago? This project documents a personal macOS automation tool and includes a small, read-only way to explore the first question.
+## What a check looks like
 
-[About the author](https://jolkins.id.lv/aboutme) · [Read the companion source](./inspect-alerts.swift)
-
-## Try the window inspector
-
-On a Mac with the Swift command-line tools, open a terminal in this repository and run
-
-```sh
-swift inspect-alerts.swift
-```
-
-The companion reports a count of visible windows matching its system-alert filter. Run it before and after dismissing a prompt yourself to compare the two observations. It reads window metadata and leaves the prompt in your hands. A count of zero means the filter found no match. A notification can also match, so a positive count alone does not identify a permission request.
-
-To check the filter against built-in examples, run `swift -D SELF_CHECK inspect-alerts.swift`. It exits quietly when the examples pass. If the normal inspector cannot access a window list, it prints an error instead of reporting zero.
-
-## Inside the original tool
-
-| Question | How the Python utility answers it |
+| What’s on the Mac | What the original program does |
 | --- | --- |
-| Which prompt is in front? | It reads the Mac’s front-to-back window list and narrows the search to likely alert windows. |
-| What does the prompt offer? | It inspects the buttons that macOS exposes through its accessibility interface. |
-| Did the window close? | It looks for the same window again after acting and reports whether it is still visible. |
+| No matching alert | Keeps watching and shows the time until its next check. |
+| An alert with recognizable controls | Reads the available button labels through macOS Accessibility and identifies the approval option. |
+| A dialog with ambiguous controls | Reports that it found a dialog but could not identify an approval button. |
+| A dialog it acted on | Checks whether the same window is still visible. A closed window alone does not establish which permission macOS ultimately granted. |
 
-The distinction in the last row matters. A dialog disappearing is visible evidence that it closed. Confirming the resulting permission would require a separate check.
+## The terminal view
 
-## What’s published here
+The dashboard keeps the check interval, uptime, check count, approval count, and last observed result together. A single-check mode prints one result and exits. A detection-only mode lets the operator inspect a proposed choice.
 
-The original local utility can act on permission dialogs and optionally handle authentication prompts. This repository contains the case study and a standalone Swift inspector. The inspector counts candidate windows without reading their contents, taking screenshots, submitting credentials, or pressing buttons.
+## About the local version
 
-Built by [Aleksandrs Daniils Jolkins](https://jolkins.id.lv/aboutme).
+The original is a Python executable for macOS. It can approve requests unattended and can optionally enter a supplied password into an authentication dialog. Both actions can grant access to the Mac. This repository documents that local version.
